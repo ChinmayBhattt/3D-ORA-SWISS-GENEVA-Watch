@@ -160,13 +160,29 @@ export function createBezelTexture(theme: WatchThemeConfig): THREE.CanvasTexture
   // Clear background
   ctx.clearRect(0, 0, 1024, 1024);
 
-  // Bezel Ring Fill (Ceramic color)
+  // Bezel Ring Fill (Ceramic color or two-tone dual Cerachrom)
   ctx.save();
-  ctx.beginPath();
-  ctx.arc(cx, cy, outerR, 0, Math.PI * 2);
-  ctx.arc(cx, cy, innerR, 0, Math.PI * 2, true);
-  ctx.fillStyle = theme.bezelColor || '#1d4ed8';
-  ctx.fill();
+  if (theme.isTwoToneBezel && theme.bezelSecondaryColor) {
+    // Top half: Blue
+    ctx.beginPath();
+    ctx.arc(cx, cy, outerR, Math.PI, 0, false);
+    ctx.arc(cx, cy, innerR, 0, Math.PI, true);
+    ctx.fillStyle = theme.bezelColor;
+    ctx.fill();
+
+    // Bottom half: Crimson Red
+    ctx.beginPath();
+    ctx.arc(cx, cy, outerR, 0, Math.PI, false);
+    ctx.arc(cx, cy, innerR, Math.PI, 0, true);
+    ctx.fillStyle = theme.bezelSecondaryColor;
+    ctx.fill();
+  } else {
+    ctx.beginPath();
+    ctx.arc(cx, cy, outerR, 0, Math.PI * 2);
+    ctx.arc(cx, cy, innerR, 0, Math.PI * 2, true);
+    ctx.fillStyle = theme.bezelColor || '#111827';
+    ctx.fill();
+  }
 
   // Subtle ceramic sheen border
   ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';

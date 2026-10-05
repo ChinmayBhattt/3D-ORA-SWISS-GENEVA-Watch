@@ -15,11 +15,20 @@ export interface WatchPartRefs {
   gearTrain: THREE.Group | null;
 }
 
-export type WatchMaterialTheme = 'oceanDiver' | 'stealthBlack' | 'emeraldMarine';
+export type WatchMaterialTheme = 
+  | 'stealthBlack' 
+  | 'oceanDiver' 
+  | 'emeraldMarine' 
+  | 'pepsiGmt' 
+  | 'presidentGold';
 
 export interface WatchThemeConfig {
+  id: WatchMaterialTheme;
   name: string;
+  subName: string;
   tagline: string;
+  refNumber: string;
+  price: string;
   metalColor: string;
   roughness: number;
   metalness: number;
@@ -27,6 +36,9 @@ export interface WatchThemeConfig {
   dialColor: string;
   dialSubColor: string;
   accentColor: string;
+  isTwoToneBezel?: boolean;
+  bezelSecondaryColor?: string;
+  accentBadge: string;
 }
 
 export interface PartCallout {
@@ -37,4 +49,7 @@ export interface PartCallout {
   description: string;
   scrollRange: [number, number];
   screenPosition: { x: number; y: number };
+  blueprintType: 'bezel' | 'crystal' | 'hands' | 'dial' | 'movement' | 'case';
+  technicalSpecs: { label: string; value: string }[];
+  materialDetail: string;
 }
