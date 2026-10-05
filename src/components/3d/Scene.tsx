@@ -13,6 +13,8 @@ interface SceneProps {
   rootGroupRef: React.RefObject<THREE.Group | null>;
   cameraRef: React.MutableRefObject<THREE.PerspectiveCamera | null>;
   isReducedMotion?: boolean;
+  isAutoRotate?: boolean;
+  isNightMode?: boolean;
 }
 
 // 3D Disassembly Animator synced with Scroll
@@ -144,6 +146,8 @@ export const Scene: React.FC<SceneProps> = ({
   rootGroupRef,
   cameraRef,
   isReducedMotion = false,
+  isAutoRotate = false,
+  isNightMode = false,
 }) => {
   const controlsRef = useRef<any>(null);
 
@@ -173,7 +177,7 @@ export const Scene: React.FC<SceneProps> = ({
         {/* Overhead softbox */}
         <mesh position={[0, 8, 0]} scale={[14, 1, 14]}>
           <boxGeometry />
-          <meshBasicMaterial color="#ffffff" />
+          <meshBasicMaterial color={isNightMode ? '#1e293b' : '#ffffff'} />
         </mesh>
         {/* Cyan/Blue rim light panel */}
         <mesh position={[-7, 2, 0]} scale={[1, 8, 12]}>
@@ -183,24 +187,24 @@ export const Scene: React.FC<SceneProps> = ({
         {/* Warm fill light panel */}
         <mesh position={[7, 2, 0]} scale={[1, 8, 12]}>
           <boxGeometry />
-          <meshBasicMaterial color="#fffbeb" />
+          <meshBasicMaterial color={isNightMode ? '#0f172a' : '#fffbeb'} />
         </mesh>
         {/* Front reflection panel */}
         <mesh position={[0, -4, 4]} scale={[10, 2, 4]}>
           <boxGeometry />
-          <meshBasicMaterial color="#e2e8f0" />
+          <meshBasicMaterial color={isNightMode ? '#020617' : '#e2e8f0'} />
         </mesh>
       </Environment>
 
       {/* Atmospheric High-Key Lighting Rig ensuring Dial & Steel are brilliantly visible */}
-      <ambientLight intensity={1.2} color="#f0f9ff" />
+      <ambientLight intensity={isNightMode ? 0.35 : 1.2} color="#f0f9ff" />
 
       {/* Direct front spotlight focused on the dial and bezel */}
       <spotLight
         position={[0, 6, 7]}
         angle={0.7}
         penumbra={0.6}
-        intensity={3.2}
+        intensity={isNightMode ? 1.0 : 3.2}
         color="#ffffff"
         castShadow
         shadow-mapSize={[1024, 1024]}
@@ -210,21 +214,21 @@ export const Scene: React.FC<SceneProps> = ({
       {/* Key warm metallic light */}
       <directionalLight
         position={[6, 8, 5]}
-        intensity={2.2}
+        intensity={isNightMode ? 0.4 : 2.2}
         color="#ffffff"
       />
 
       {/* Cool Oceanic Blue rim light (creates moody edge sheen like reference image) */}
       <directionalLight
         position={[-6, 4, -4]}
-        intensity={2.5}
+        intensity={isNightMode ? 3.5 : 2.5}
         color="#0284c7"
       />
 
       {/* Front fill light */}
       <directionalLight
         position={[0, -2, 6]}
-        intensity={1.2}
+        intensity={isNightMode ? 0.3 : 1.2}
         color="#bae6fd"
       />
 
@@ -262,6 +266,8 @@ export const Scene: React.FC<SceneProps> = ({
         dampingFactor={0.06}
         minPolarAngle={Math.PI * 0.1}
         maxPolarAngle={Math.PI * 0.9}
+        autoRotate={isAutoRotate}
+        autoRotateSpeed={1.8}
       />
     </Canvas>
   );

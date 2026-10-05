@@ -8,15 +8,19 @@ import { HeroOverlay } from './components/ui/HeroOverlay';
 import { CalloutOverlay } from './components/ui/CalloutOverlay';
 import { CTASection, ReservationModal } from './components/ui/CTASection';
 import { Loader } from './components/ui/Loader';
+import { HorologyControls } from './components/ui/HorologyControls';
+import { WatchCollectionSection } from './components/ui/WatchCollectionSection';
 import { useScrollAnimation } from './hooks/useScrollAnimation';
 import { horologyAudio } from './audio/watchSound';
 
 export function App() {
-  // Theme state: defaults to 'oceanDiver' (Deep oceanic blue Cerachrom & 904L Steel)
-  const [currentTheme, setCurrentTheme] = useState<WatchMaterialTheme>('oceanDiver');
+  // Theme state: defaults to 'stealthBlack' (Rolex Submariner Nocturne Onyx Black)
+  const [currentTheme, setCurrentTheme] = useState<WatchMaterialTheme>('stealthBlack');
   const [isMuted, setIsMuted] = useState(true);
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [isReducedMotion, setIsReducedMotion] = useState(false);
+  const [isAutoRotate, setIsAutoRotate] = useState(false);
+  const [isNightMode, setIsNightMode] = useState(false);
 
   // Check user preference for reduced motion
   useEffect(() => {
@@ -58,6 +62,14 @@ export function App() {
     setIsMuted(!active);
   };
 
+  // Reset Camera View
+  const handleResetView = () => {
+    if (cameraRef.current) {
+      cameraRef.current.position.set(0, 0, 6.2);
+      cameraRef.current.lookAt(0, 0, 0);
+    }
+  };
+
   return (
     <div className="relative bg-[#030712] text-[#e2e8f0] selection:bg-[#38bdf8]/30">
       {/* Luxury Loading Screen with Drei useProgress */}
@@ -77,8 +89,15 @@ export function App() {
       <div ref={containerRef} className="relative w-full" style={{ height: '600vh' }}>
         {/* Fixed 100vh Canvas Viewport - Guaranteed to stay in view at every scroll step */}
         <div className="fixed inset-0 w-full h-screen overflow-hidden pointer-events-none">
-          {/* Deep Cinematic Oceanic Glow & Water Atmosphere (Matches reference image) */}
-          <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_62%_45%,rgba(2,132,199,0.22)_0%,rgba(6,19,38,0.75)_50%,#030712_100%)]" />
+          {/* Deep Cinematic Oceanic Glow & Water Atmosphere */}
+          <div
+            className="absolute inset-0 pointer-events-none transition-all duration-700"
+            style={{
+              background: isNightMode
+                ? 'radial-gradient(circle_at_62%_45%,rgba(2,132,199,0.15)_0%,rgba(2,6,23,0.92)_50%,#020617_100%)'
+                : 'radial-gradient(circle_at_62%_45%,rgba(2,132,199,0.22)_0%,rgba(6,19,38,0.75)_50%,#030712_100%)',
+            }}
+          />
 
           {/* 3D WebGL Canvas - 3D Rotation Always On & Parts Explode On Scroll */}
           <div className="w-full h-full relative z-10 pointer-events-auto">
@@ -90,9 +109,21 @@ export function App() {
                 rootGroupRef={rootGroupRef}
                 cameraRef={cameraRef}
                 isReducedMotion={isReducedMotion}
+                isAutoRotate={isAutoRotate}
+                isNightMode={isNightMode}
               />
             </Suspense>
           </div>
+
+          {/* Floating Horology Controls HUD */}
+          <HorologyControls
+            isAutoRotate={isAutoRotate}
+            onToggleAutoRotate={() => setIsAutoRotate(!isAutoRotate)}
+            isNightMode={isNightMode}
+            onToggleNightMode={() => setIsNightMode(!isNightMode)}
+            onResetView={handleResetView}
+            progress={scrollState.progress}
+          />
 
           {/* Stage 1: Hero Overlay (0 - 15%) - Editorial TIME, REDEFINED. */}
           <HeroOverlay progress={scrollState.progress} />
@@ -127,6 +158,13 @@ export function App() {
           </div>
         </div>
       </div>
+
+      {/* Multiple Watches Collection Showcase & Atelier Engineering Standards */}
+      <WatchCollectionSection
+        currentTheme={currentTheme}
+        onThemeSelect={(t) => setCurrentTheme(t)}
+        onOpenOrderModal={() => setIsOrderModalOpen(true)}
+      />
 
       {/* Private Allocation Modal */}
       <ReservationModal

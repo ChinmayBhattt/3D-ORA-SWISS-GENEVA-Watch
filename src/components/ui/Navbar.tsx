@@ -65,10 +65,24 @@ export const Navbar: React.FC<NavbarProps> = ({
                   }`}
                 >
                   <span
-                    className="w-2.5 h-2.5 rounded-full border border-black/30"
+                    className="w-2.5 h-2.5 rounded-full border border-black/30 overflow-hidden shrink-0 flex"
                     style={{ backgroundColor: t.bezelColor }}
-                  />
-                  <span>{key === 'oceanDiver' ? 'Ocean Blue' : key === 'stealthBlack' ? 'Nocturne' : 'Emerald'}</span>
+                  >
+                    {t.isTwoToneBezel && t.bezelSecondaryColor && (
+                      <span className="w-1/2 h-full" style={{ backgroundColor: t.bezelSecondaryColor }} />
+                    )}
+                  </span>
+                  <span className="whitespace-nowrap">
+                    {key === 'stealthBlack'
+                      ? 'Nocturne'
+                      : key === 'oceanDiver'
+                      ? 'Ocean Blue'
+                      : key === 'emeraldMarine'
+                      ? 'Emerald'
+                      : key === 'pepsiGmt'
+                      ? 'Pepsi GMT'
+                      : 'President Gold'}
+                  </span>
                 </button>
               );
             })}
