@@ -38,6 +38,7 @@ export function App() {
     hands: null,
     dial: null,
     movement: null,
+    caseMiddle: null,
     caseBack: null,
     crown: null,
     strapTop: null,

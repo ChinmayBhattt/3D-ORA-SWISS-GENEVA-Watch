@@ -21,18 +21,8 @@ export const CalloutOverlay: React.FC<CalloutOverlayProps> = ({
         const isActive = activeCalloutId === callout.id;
         if (!isActive) return null;
 
-        const [start, end] = callout.scrollRange;
-
-        // Smooth bell curve opacity within its range
-        let opacity = 0;
-        if (progress >= start && progress <= end) {
-          const mid = (start + end) / 2;
-          const halfSpan = (end - start) / 2;
-          const dist = Math.abs(progress - mid);
-          opacity = Math.max(0, 1 - Math.pow(dist / halfSpan, 1.5));
-        }
-
-        if (opacity <= 0.02) return null;
+        // Card is active and fully visible with smooth CSS transitions
+        const opacity = 1;
 
         const isLeft = callout.screenPosition.x < 50;
 

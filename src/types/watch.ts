@@ -6,6 +6,7 @@ export interface WatchPartRefs {
   hands: THREE.Group | null;
   dial: THREE.Group | null;
   movement: THREE.Group | null;
+  caseMiddle: THREE.Group | null;
   caseBack: THREE.Group | null;
   crown: THREE.Group | null;
   strapTop: THREE.Group | null;

@@ -54,73 +54,84 @@ const ExplosionAnimator: React.FC<{
 
     const t = isReducedMotion ? 0 : explosionFactor;
 
-    // Separate Watch Parts along outward trajectories
+    // Separate Watch Parts along outward trajectories with generous horological spacing
     const refs = partRefs.current;
 
-    // 1. Ceramic Diver Bezel (lifts and hovers outward in the air)
-    if (refs.bezel) {
-      refs.bezel.position.y = THREE.MathUtils.lerp(0.20, 1.6, t);
-      refs.bezel.rotation.y = THREE.MathUtils.lerp(0, -0.2, t);
-    }
-
-    // 2. Double-domed Sapphire Crystal (lifts above bezel)
+    // 1. Double-domed Sapphire Crystal (lifts high above)
     if (refs.crystal) {
-      refs.crystal.position.y = THREE.MathUtils.lerp(0.28, 2.35, t);
-      refs.crystal.rotation.y = THREE.MathUtils.lerp(0, 0.15, t);
+      refs.crystal.position.y = THREE.MathUtils.lerp(0.28, 3.55, t);
+      refs.crystal.rotation.y = THREE.MathUtils.lerp(0, 0.18, t);
     }
 
-    // 3. Chromalight Hands (lifts up)
+    // 2. Ceramic Diver Bezel (floats cleanly between crystal and hands)
+    if (refs.bezel) {
+      refs.bezel.position.y = THREE.MathUtils.lerp(0.20, 2.65, t);
+      refs.bezel.rotation.y = THREE.MathUtils.lerp(0, -0.22, t);
+    }
+
+    // 3. Chromalight Hands (hovers above dial)
     if (refs.hands) {
-      refs.hands.position.y = THREE.MathUtils.lerp(0.14, 1.05, t);
-      refs.hands.rotation.y = THREE.MathUtils.lerp(0, 0.25, t);
+      refs.hands.position.y = THREE.MathUtils.lerp(0.14, 1.85, t);
+      refs.hands.rotation.y = THREE.MathUtils.lerp(0, 0.28, t);
     }
 
-    // 4. Maxi Oceanic Dial (separates)
+    // 4. Maxi Oceanic Dial (lifts and tilts back, revealing movement underneath)
     if (refs.dial) {
-      refs.dial.position.y = THREE.MathUtils.lerp(0.06, 0.5, t);
-      refs.dial.rotation.y = THREE.MathUtils.lerp(0, -0.1, t);
+      refs.dial.position.y = THREE.MathUtils.lerp(0.06, 1.15, t);
+      refs.dial.position.z = THREE.MathUtils.lerp(0, -0.32, t);
+      refs.dial.rotation.x = THREE.MathUtils.lerp(0, -0.16, t);
+      refs.dial.rotation.y = THREE.MathUtils.lerp(0, -0.12, t);
     }
 
-    // 5. Calibre 3235 Movement (moves forward/downward)
+    // 5. Calibre 3235 Movement (proudly elevated in prime focal center!)
     if (refs.movement) {
-      refs.movement.position.y = THREE.MathUtils.lerp(-0.05, -0.22, t);
-      refs.movement.rotation.y = THREE.MathUtils.lerp(0, 0.2, t);
+      refs.movement.position.y = THREE.MathUtils.lerp(-0.05, 0.15, t);
+      refs.movement.rotation.y = THREE.MathUtils.lerp(0, 0.25, t);
     }
 
-    // 6. Screw-down Case Back (drops downward along -Y)
+    // 6. 904L Sculpted Middle Case (separated below movement)
+    if (refs.caseMiddle) {
+      refs.caseMiddle.position.y = THREE.MathUtils.lerp(-0.14, -0.85, t);
+      refs.caseMiddle.rotation.y = THREE.MathUtils.lerp(0, -0.12, t);
+    }
+
+    // 7. Screw-down Fluted Case Back (drops deep downward along -Y)
     if (refs.caseBack) {
-      refs.caseBack.position.y = THREE.MathUtils.lerp(-0.16, -1.6, t);
-      refs.caseBack.rotation.y = THREE.MathUtils.lerp(0, -0.25, t);
+      refs.caseBack.position.y = THREE.MathUtils.lerp(-0.24, -2.15, t);
+      refs.caseBack.rotation.y = THREE.MathUtils.lerp(0, -0.28, t);
     }
 
-    // 7. Triplock Crown (slides outward along +X)
+    // 8. Triplock Crown & Winding Stem (slides outward along +X)
     if (refs.crown) {
-      refs.crown.position.x = THREE.MathUtils.lerp(2.04, 3.25, t);
+      refs.crown.position.x = THREE.MathUtils.lerp(2.04, 3.60, t);
     }
 
-    // 8. 3-link Oystersteel Bracelet (slides outward along ±Z)
+    // 9. 3-link Oystersteel Bracelet (slides outward along ±Z)
     if (refs.strapTop) {
-      refs.strapTop.position.z = THREE.MathUtils.lerp(-2.1, -3.7, t);
+      refs.strapTop.position.z = THREE.MathUtils.lerp(-2.1, -4.2, t);
     }
     if (refs.strapBottom) {
-      refs.strapBottom.position.z = THREE.MathUtils.lerp(2.1, 3.7, t);
+      refs.strapBottom.position.z = THREE.MathUtils.lerp(2.1, 4.2, t);
     }
 
     // Watch base orientation: front-facing tilted towards camera
     if (rootGroupRef.current) {
       // In Hero (p < 0.12): position on right side at x=0.75, tilted so dial is directly visible
-      // In Explosion (0.12 - 0.72): centered at x=0
+      // In Explosion (0.12 - 0.72): centered at x=0, 44-degree isometric angle for dramatic layer visibility
       // In CTA (> 0.88): shift to x=-1.2 to give room to spec sheet on the right
       let targetX = 0.75;
       let targetY = -0.15;
-      let targetRotX = 1.05; // ~60 degrees pitch towards camera!
+      let targetRotX = 1.05; // ~60 degrees pitch towards camera
       let targetRotY = -0.32;
       let targetRotZ = 0.18;
 
       if (t > 0) {
         targetX = THREE.MathUtils.lerp(0.75, 0, t);
-        targetRotX = THREE.MathUtils.lerp(1.05, 1.18, t);
+        targetY = THREE.MathUtils.lerp(-0.15, -0.05, t);
+        // Pitch changes from 1.05 to 0.78 radians (~44 deg) to give huge vertical gap visibility
+        targetRotX = THREE.MathUtils.lerp(1.05, 0.78, t);
         targetRotY = THREE.MathUtils.lerp(-0.32, -0.42, t);
+        targetRotZ = THREE.MathUtils.lerp(0.18, 0.10, t);
       } else if (p >= 0.88) {
         const ctaFactor = Math.min(1, (p - 0.88) / 0.12);
         targetX = THREE.MathUtils.lerp(0.75, -1.2, ctaFactor);
@@ -230,6 +241,19 @@ export const Scene: React.FC<SceneProps> = ({
         position={[0, -2, 6]}
         intensity={isNightMode ? 0.3 : 1.2}
         color="#bae6fd"
+      />
+
+      {/* Horological Movement Focus Light - illuminates golden gear train, rubies & hairspring */}
+      <pointLight
+        position={[0, 2, 4]}
+        intensity={isNightMode ? 1.2 : 2.8}
+        color="#fffbeb"
+        distance={12}
+      />
+      <directionalLight
+        position={[2, 3, 5]}
+        intensity={isNightMode ? 0.8 : 2.0}
+        color="#fef08a"
       />
 
       {/* Underwater Caustic / Floating Light Dust Particles */}

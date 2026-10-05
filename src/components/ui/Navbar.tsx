@@ -44,8 +44,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             <Menu className="w-5 h-5" />
           </button>
 
-          {/* Theme Selector Pills (Always visible and responsive) */}
-          <div className="flex items-center bg-white/10 border border-white/20 rounded-full p-1 backdrop-blur-md shadow-lg">
+          {/* Theme Selector Pills - Luxury Horological Swatch Dock (Compact, Zero Overlap) */}
+          <div className="flex items-center bg-black/50 border border-white/15 hover:border-white/30 rounded-full p-1 backdrop-blur-xl shadow-lg transition-all">
             {(Object.keys(WATCH_THEMES) as WatchMaterialTheme[]).map((key) => {
               const t = WATCH_THEMES[key];
               const isActive = currentTheme === key;
@@ -58,31 +58,54 @@ export const Navbar: React.FC<NavbarProps> = ({
                     e.stopPropagation();
                     onThemeChange(key);
                   }}
-                  className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-mono tracking-wider transition-all flex items-center gap-1.5 cursor-pointer ${
+                  title={`${t.name} • ${t.subName} (${t.price})`}
+                  className={`group relative rounded-full transition-all duration-300 flex items-center cursor-pointer ${
                     isActive
-                      ? 'bg-[#38bdf8] text-black font-semibold shadow-[0_0_15px_rgba(56,189,248,0.5)]'
-                      : 'text-slate-300 hover:text-white hover:bg-white/10'
+                      ? 'bg-[#38bdf8] text-black font-semibold shadow-[0_0_16px_rgba(56,189,248,0.55)] px-3 py-1 text-xs'
+                      : 'p-1.5 hover:bg-white/10 text-slate-300 hover:text-white'
                   }`}
                 >
+                  {/* Ceramic Bezel / Gold Color Swatch */}
                   <span
-                    className="w-2.5 h-2.5 rounded-full border border-black/30 overflow-hidden shrink-0 flex"
+                    className={`rounded-full border border-black/30 overflow-hidden shrink-0 flex shadow-sm transition-transform ${
+                      isActive ? 'w-2.5 h-2.5 mr-1.5' : 'w-4 h-4 group-hover:scale-110'
+                    }`}
                     style={{ backgroundColor: t.bezelColor }}
                   >
                     {t.isTwoToneBezel && t.bezelSecondaryColor && (
                       <span className="w-1/2 h-full" style={{ backgroundColor: t.bezelSecondaryColor }} />
                     )}
                   </span>
-                  <span className="whitespace-nowrap">
-                    {key === 'stealthBlack'
-                      ? 'Nocturne'
-                      : key === 'oceanDiver'
-                      ? 'Ocean Blue'
-                      : key === 'emeraldMarine'
-                      ? 'Emerald'
-                      : key === 'pepsiGmt'
-                      ? 'Pepsi GMT'
-                      : 'President Gold'}
-                  </span>
+
+                  {/* Active Edition Label */}
+                  {isActive && (
+                    <span className="whitespace-nowrap font-mono text-[11px] tracking-wider uppercase font-semibold">
+                      {key === 'stealthBlack'
+                        ? 'Nocturne'
+                        : key === 'oceanDiver'
+                        ? 'Royal Blue'
+                        : key === 'emeraldMarine'
+                        ? 'Emerald'
+                        : key === 'pepsiGmt'
+                        ? 'Pepsi GMT'
+                        : 'President Gold'}
+                    </span>
+                  )}
+
+                  {/* Hover Tooltip for inactive swatches */}
+                  {!isActive && (
+                    <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap bg-black/95 text-white border border-white/15 px-2 py-0.5 rounded text-[10px] font-mono shadow-2xl z-50">
+                      {key === 'stealthBlack'
+                        ? 'Nocturne'
+                        : key === 'oceanDiver'
+                        ? 'Royal Blue'
+                        : key === 'emeraldMarine'
+                        ? 'Emerald'
+                        : key === 'pepsiGmt'
+                        ? 'Pepsi GMT'
+                        : 'President Gold'}
+                    </span>
+                  )}
                 </button>
               );
             })}
